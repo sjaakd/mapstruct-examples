@@ -1,0 +1,21 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.mapstruct.example.dto;
+
+/**
+ *
+ * @author Sjaak Derksen
+ */
+public enum BuildingType {
+
+    CHURCH,
+    SCHOOL,
+    GARAGE,
+    RESIDENTIAL_HOUSES,
+    UNKNOWN,
+    MIXED;
+
+}

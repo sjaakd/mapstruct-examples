@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright © 2007 Open Geospatial Consortium, Inc. All Rights Reserved.
+
+This Application Schema, taken from OGC 07-036, section E3, example
+see: http://portal.opengeospatial.org/files/?artifact_id=20509
+-->
+
+<schema targetNamespace="http://www.someorg.de/example"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:ex="http://www.someorg.de/example"
+        xmlns:gml="http://www.opengis.net/gml/3.2"
+        elementFormDefault="qualified"
+        version="1.0">
+    <!-- ================================== -->
+    <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+    <import namespace="http://www.w3.org/1999/xlink" schemaLocation="http://www.w3.org/1999/xlink.xsd"/>
+    <!-- ================================== -->
+    <element name="Parcel" substitutionGroup="gml:AbstractFeature">
+        <complexType>
+            <complexContent>
+                <extension base="gml:AbstractFeatureType">
+                    <sequence>
+                        <element name="area" type="gml:AreaType"/>
+                        <element name="extent" type="gml:SurfacePropertyType"/>
+                        <element name="owner" type="ex:PersonPropertyType" maxOccurs="unbounded">
+                            <annotation>
+                                <appinfo>
+                                    <gml:reverseProperty>ex:owns</gml:reverseProperty>
+                                </appinfo>
+                            </annotation>
+                        </element>
+                        <element name="hasBuilding" type="ex:BuildingPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+    <complexType name="ParcelPropertyType">
+        <sequence minOccurs="0">
+            <element ref="ex:Parcel"/>
+        </sequence>
+        <attributeGroup ref="gml:AssociationAttributeGroup"/>
+        <attributeGroup ref="gml:OwnershipAttributeGroup" />
+    </complexType>
+    <!-- ================================== -->
+    <element name="Building" substitutionGroup="gml:AbstractFeature">
+        <complexType>
+            <complexContent>
+                <extension base="gml:AbstractFeatureType">
+                    <sequence>
+                        <element name="extent" type="gml:SurfacePropertyType"/>
+                        <element name="address">
+                            <complexType>
+                                <sequence>
+                                    <element name="Address" type="ex:AddressType"/>
+                                </sequence>
+                            </complexType>
+                        </element>
+                        <element name="type" type="ex:BuildingTypeType"/>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+    <complexType name="BuildingPropertyType">
+        <sequence minOccurs="0">
+            <element ref="ex:Building"/>
+        </sequence>
+        <attributeGroup ref="gml:AssociationAttributeGroup"/>
+        <attributeGroup ref="gml:OwnershipAttributeGroup" />
+    </complexType>
+    <!-- ================================== -->
+    <element name="Person" substitutionGroup="gml:AbstractFeature">
+        <complexType>
+            <complexContent>
+                <extension base="gml:AbstractFeatureType">
+                    <sequence>
+                        <element name="firstName" type="string"/>
+                        <element name="lastName" type="string"/>
+                        <element name="owns" type="ex:ParcelPropertyType" minOccurs="0" maxOccurs="unbounded">
+                            <annotation>
+                                <appinfo>
+                                    <gml:reverseProperty>ex:owner</gml:reverseProperty>
+                                </appinfo>
+                            </annotation>
+                        </element>
+                    </sequence>
+                </extension>
+            </complexContent>
+        </complexType>
+    </element>
+    <complexType name="PersonPropertyType">
+        <sequence minOccurs="0">
+            <element ref="ex:Person"/>
+        </sequence>
+        <attributeGroup ref="gml:AssociationAttributeGroup"/>
+        <attributeGroup ref="gml:OwnershipAttributeGroup" />
+    </complexType>
+    <!-- ================================== -->
+    <complexType name="AddressType">
+        <sequence>
+            <element name="street" type="string" minOccurs="0"/>
+            <element name="housenumber" type="string" minOccurs="0"/>
+            <element name="poBox" type="string" minOccurs="0"/>
+            <element name="city" type="string"/>
+            <element name="postalCode" type="string"/>
+            <element name="country" type="ex:CountryCodeType" minOccurs="0" default="DE"/>
+        </sequence>
+    </complexType>
+    <!-- ================================== -->
+    <simpleType name="BuildingTypeType">
+        <restriction base="string">
+            <enumeration value="church"/>
+            <enumeration value="school"/>
+            <enumeration value="garage"/>
+            <enumeration value="residential houses"/>
+            <enumeration value="unknown"/>
+            <enumeration value="mixed"/>
+        </restriction>
+    </simpleType>
+    <!-- ================================== -->
+    <simpleType name="CountryCodeType">
+        <union memberTypes="ex:CountryCodeEnumerationType ex:CountryCodeOtherType"/>
+    </simpleType>
+    <simpleType name="CountryCodeEnumerationType">
+        <restriction base="string">
+            <enumeration value="DE"/>
+            <enumeration value="US"/>
+            <enumeration value="CA"/>
+            <enumeration value="..."/>
+        </restriction>
+    </simpleType>
+    <simpleType name="CountryCodeOtherType">
+        <restriction base="string">
+            <pattern value="other: \w{2,}"/>
+        </restriction>
+    </simpleType>
+    <!-- ================================== -->
+    <element name="Ellipse" type="ex:EllipseType" substitutionGroup="gml:AbstractCurveSegment"/>
+    <complexType name="EllipseType">
+        <complexContent>
+            <extension base="gml:AbstractCurveSegmentType">
+                <sequence>
+                    <element name="center" type="gml:DirectPositionType"/>
+                    <element name="semiminor" type="gml:VectorType"/>
+                    <element name="semimajor" type="gml:VectorType"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+</schema>
